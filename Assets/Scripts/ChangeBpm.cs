@@ -33,8 +33,8 @@ public class ChangeBpm : MonoBehaviour
         audioSource.pitch = startingPitch;
         audioSource.loop = true;
         audioSource.Play();
-        original_bpm = UniBpmAnalyzer.AnalyzeBpm(audioClip1);
-        changed_bpm = UniBpmAnalyzer.AnalyzeBpm(audioClip1);
+        original_bpm = UniBpmAnalyzer.AnalyzeBpm(audioClip1)/2;
+        changed_bpm = UniBpmAnalyzer.AnalyzeBpm(audioClip1)/2;
         Bpm_text.text = original_bpm.ToString();
         if (original_bpm < 0)
         {
@@ -60,7 +60,7 @@ public class ChangeBpm : MonoBehaviour
     }
      public void onClickChangeMode()
     {
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Start");
     }
     public void InputText()
     {
