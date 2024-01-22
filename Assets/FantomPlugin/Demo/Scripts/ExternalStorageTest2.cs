@@ -76,6 +76,7 @@ public class ExternalStorageTest2 : MonoBehaviour {
     private void Start() {
         MakeDropdown();
         SetEnableAudioButtons(false);
+        //DontDestroyOnLoad(gameObject);
     }
 
     // Update is called once per frame

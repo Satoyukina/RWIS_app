@@ -6,6 +6,7 @@ public class AudioLoadTest : MonoBehaviour  //※クラス名は任意
 {
     public AudioSource audioSource;  //インスペクタで AudioSource をセット
     public string path;  //※ファイルは任意
+    public static AudioClip audioClip;
 
     //外部からの呼び出し用メソッド
     public void LoadAudio(string path)
@@ -49,6 +50,7 @@ public class AudioLoadTest : MonoBehaviour  //※クラス名は任意
             audioSource.clip = audioClip;
             audioSource.Play();
             Debug.Log("Load success : " + path);
+            //ChangeBpm.audioClip1 = audioClip;
         }
     }
 

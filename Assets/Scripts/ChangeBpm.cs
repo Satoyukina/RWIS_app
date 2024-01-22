@@ -30,6 +30,7 @@ public class ChangeBpm : MonoBehaviour
         inputField = inputField.GetComponent<InputField> ();
         audioSource = this.gameObject.AddComponent<AudioSource>();
         audioSource.clip = audioClip1;
+        //audioClip1 = AudioLoadTest.audioClip;
         audioSource.pitch = startingPitch;
         audioSource.loop = true;
         audioSource.Play();
