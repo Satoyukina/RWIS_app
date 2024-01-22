@@ -8,6 +8,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using FantomLib;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 //Get External Storage folder information and Storage Access Framework and localize demo
 //ストレージのフォルダ情報取得とストレージアクセス機能の利用とローカライズのデモ
@@ -15,7 +17,10 @@ public class ExternalStorageTest2 : MonoBehaviour {
 
     //UIs
     public Text displayText;
-
+    public Text Bpm_text = null;
+    int changed_bpm = 0;
+    int original_bpm = 0;
+    private AudioClip audioClip;
     public Dropdown textDropdown;
     public string[] textExt;
     public bool addTextAllType = true;
@@ -779,7 +784,7 @@ public class ExternalStorageTest2 : MonoBehaviour {
             while (!www.isDone)
                 yield return null;
 
-            AudioClip audioClip = www.GetAudioClip(false, true);
+            audioClip = www.GetAudioClip(false, true);
             if (audioClip.loadState != AudioDataLoadState.Loaded)
             {
                 XDebug.Log("Failed to load AudioClip.");
@@ -793,10 +798,43 @@ public class ExternalStorageTest2 : MonoBehaviour {
         }
     }
 
+    public void onClickUp()
+    {
+        changed_bpm++;
+        Bpm_text.text = changed_bpm.ToString();
+        audioSource.pitch = (int)(changed_bpm/original_bpm);
+    }
+    public void onClickDown()
+    {
+        changed_bpm--;
+        Bpm_text.text = changed_bpm.ToString();
+        audioSource.pitch = (int)(changed_bpm/original_bpm);
+    }
+    public void onClickReset()
+    {
+        //changed_bpm = original_bpm;
+        audioSource.pitch = 1;
+        Bpm_text.text = original_bpm.ToString();
+    }
+     public void onClickChangeMode()
+    {
+        SceneManager.LoadScene("Start");
+    }
     public void PlayAudio()
     {
         if (audioSource != null && !audioSource.isPlaying)
+        {
             audioSource.Play();
+            original_bpm = UniBpmAnalyzer.AnalyzeBpm(audioClip);
+            changed_bpm = UniBpmAnalyzer.AnalyzeBpm(audioClip);
+            Bpm_text.text = original_bpm.ToString();
+            if (original_bpm < 0)
+            {
+                Debug.LogError("AudioClip is null.");
+                return;
+            }
+        }
+        
     }
 
     public void StopAudio()
