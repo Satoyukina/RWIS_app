@@ -13,6 +13,8 @@ using UnityEngine.SceneManagement;
 
 public class MakeBpmScript : MonoBehaviour
 {
+    public float span = 1f;
+    public float span_time = 0f;
     private float currentTime = 0f;
     public float measure_time = 10f;
     int original_bpm = 0;
@@ -51,12 +53,19 @@ public class MakeBpmScript : MonoBehaviour
     public void onClickStart()
     {
         flag = true;
+        tap_count = 0;
+        make_bpm = 0;
+        currentTime = 0;
+        span_time = 0;
     }
 
     public void onClickReset()
     {
         tap_count = 0;
         make_bpm = 0;
+        changedPitch = 1f;
+        Bpm_text.text = original_bpm.ToString();
+        flag = false;
     }
      public void onClickChangeMode()
     {
@@ -70,9 +79,9 @@ public class MakeBpmScript : MonoBehaviour
     {
         if(flag == true){
             currentTime += Time.deltaTime;
+            span_time += Time.deltaTime;
             if(currentTime <= measure_time){
                 make_bpm = (int)(tap_count*60f/currentTime);
-                Bpm_text.text = make_bpm.ToString();
             }
             else if(currentTime > measure_time){
                 make_bpm = (int)(tap_count*6);
@@ -81,11 +90,17 @@ public class MakeBpmScript : MonoBehaviour
                 flag = false;
                 return;
             }
+
+            if(span_time >= span)
+            {
+                Bpm_text.text = make_bpm.ToString();
+                span_time = 0f;
+            }
         }
         //changedPitch = (float)changed_bpm/original_bpm;
-        audioSource.pitch = changedPitch;
-        Bpm_text.text = make_bpm.ToString();
-
+        else{
+            audioSource.pitch = changedPitch;
+        }
     }
 
 }
