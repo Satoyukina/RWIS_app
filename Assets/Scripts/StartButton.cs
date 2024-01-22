@@ -52,7 +52,7 @@ public class StartButton : MonoBehaviour
         audioSource.pitch = startingPitch;
         audioSource.loop = true;
         audioSource.Play();
-        bpm = UniBpmAnalyzer.AnalyzeBpm(audioClip1);
+        bpm = UniBpmAnalyzer.AnalyzeBpm(audioClip1)/2;
         Bpm_text.text = bpm.ToString();
         if (bpm < 0)
         {
@@ -61,20 +61,13 @@ public class StartButton : MonoBehaviour
         }
         
     }
-    public void onClick1()
-    {
-        audioSource.clip = audioClip1;
-    }
-    public void onClick2()
-    {
-        audioSource.clip = audioClip2;
-    }
 
     public void onClick()
     {
         currentTime = 0f;
         acceleration = 0f;
         footstep = 0;
+        Footstep_text.text = footstep.ToString();
         Debug.Log("Start!");
         flag = true;
         first_data = true;
@@ -82,7 +75,7 @@ public class StartButton : MonoBehaviour
 
     public void onClickChangeMode()
     {
-        SceneManager.LoadScene("Adjust");
+        SceneManager.LoadScene("Start");
     }
 
     // Update is called once per frame
@@ -122,7 +115,13 @@ public class StartButton : MonoBehaviour
                     Debug_textmax.text = max_acc.ToString();
                     Debug_textmin.text = min_acc.ToString();
                     Measurement.text = "2nd Measurement";
-                    if(acceleration >= (max_acc - 1))
+                    if(Mathf.Abs(max_acc - min_acc) <= 0.5)
+                    {
+                        flag = true;
+                        Measurement.text = "Measurement failed.";
+                        return;
+                    }
+                    if(acceleration >= (max_acc - 0.5))
                     {
                         one_step = true;
                         Debug_text.text = "up_count";
@@ -130,7 +129,7 @@ public class StartButton : MonoBehaviour
                     }
                     if(one_step == true)
                     {
-                        if(acceleration <= (min_acc + 0.5))
+                        if(acceleration <= (min_acc + 0.3))
                         {
                             one_step = false;
                             footstep++;
