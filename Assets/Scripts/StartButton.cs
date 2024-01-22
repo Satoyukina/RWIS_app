@@ -77,6 +77,10 @@ public class StartButton : MonoBehaviour
     {
         SceneManager.LoadScene("Start");
     }
+    public void onClickChangeNextMode()
+    {
+        SceneManager.LoadScene("MakeBpm");
+    }
 
     // Update is called once per frame
     void Update()

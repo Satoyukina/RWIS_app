@@ -13,18 +13,26 @@ using UnityEngine.SceneManagement;
 
 //Get External Storage folder information and Storage Access Framework and localize demo
 //ストレージのフォルダ情報取得とストレージアクセス機能の利用とローカライズのデモ
-public class ExternalStorageTest2 : MonoBehaviour {
+public class CreateTempo : MonoBehaviour {
 
     //UIs
-    public Text displayText;
-    public Text Bpm_text = null;
-    int changed_bpm = 0;
+    public float span = 1f;
+    public float span_time = 0f;
+    private float currentTime = 0f;
+    public float measure_time = 10f;
     int original_bpm = 0;
+    int make_bpm = 0;
+    int tap_count = 0;
+    bool flag = false;
+    float changedPitch;
+    public Text Bpm_text = null;
+    public Text displayText;
+    int changed_bpm = 0;
+    public InputField inputField;
     private AudioClip audioClip;
     public Dropdown textDropdown;
     public string[] textExt;
     public bool addTextAllType = true;
-    public InputField inputField;
 
     public Dropdown fileDropdown;
     public Dropdown imageDropdown;
@@ -92,6 +100,33 @@ public class ExternalStorageTest2 : MonoBehaviour {
 
     
     //==========================================================
+
+    void Update(){
+        if(flag == true){
+            currentTime += Time.deltaTime;
+            span_time += Time.deltaTime;
+            if(currentTime <= measure_time){
+                make_bpm = (int)(tap_count*60f/currentTime);
+            }
+            else if(currentTime > measure_time){
+                make_bpm = (int)(tap_count*6);
+                changedPitch = (float)make_bpm/(float)original_bpm;
+                audioSource.pitch = changedPitch;
+                flag = false;
+                return;
+            }
+
+            if(span_time >= span)
+            {
+                Bpm_text.text = make_bpm.ToString();
+                span_time = 0f;
+            }
+        }
+        //changedPitch = (float)changed_bpm/original_bpm;
+        else{
+            audioSource.pitch = changedPitch;
+        }
+    }
 
     //MIME type list (Adjust the order with dropdown)
     List<string[]> fileMime;
@@ -798,39 +833,34 @@ public class ExternalStorageTest2 : MonoBehaviour {
             PlayAudio();
         }
     }
+    public void onClickTap()
+    {
+        tap_count++;
+    }
+    public void onClickStart()
+    {
+        flag = true;
+        tap_count = 0;
+        make_bpm = 0;
+        currentTime = 0;
+        span_time = 0;
+    }
 
-    public void onClickUp()
-    {
-        changed_bpm++;
-        Bpm_text.text = changed_bpm.ToString();
-        audioSource.pitch = (float)changed_bpm/(float)original_bpm;
-    }
-    public void onClickDown()
-    {
-        changed_bpm--;
-        Bpm_text.text = changed_bpm.ToString();
-        audioSource.pitch = (float)changed_bpm/(float)original_bpm;
-    }
     public void onClickReset()
     {
-        //changed_bpm = original_bpm;
+        tap_count = 0;
+        make_bpm = 0;
+        currentTime = 0;
+        span_time = 0;
         audioSource.pitch = 1;
+        changed_bpm = original_bpm;
         Bpm_text.text = original_bpm.ToString();
     }
     public void onClickChangeMode()
     {
         SceneManager.LoadScene("Start");
     }
-    public void onClickChangeNextMode()
-    {
-        SceneManager.LoadScene("SampleScene");
-    }
-    public void InputText()
-    {
-        //テキストにinputFieldの内容を反映
-        Bpm_text.text = inputField.text;
-        changed_bpm = int.Parse(inputField.text);
-    } 
+
     public void PlayAudio()
     {
         if (audioSource != null && !audioSource.isPlaying)

@@ -67,9 +67,13 @@ public class MakeBpmScript : MonoBehaviour
         Bpm_text.text = original_bpm.ToString();
         flag = false;
     }
-     public void onClickChangeMode()
+    public void onClickChangeMode()
     {
         SceneManager.LoadScene("Start");
+    }
+    public void onClickChangeNextMode()
+    {
+        SceneManager.LoadScene("ExternalStorageTest");
     }
 
 

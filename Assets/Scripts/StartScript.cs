@@ -13,7 +13,7 @@ public class StartScript : MonoBehaviour
 
     public void onClickToAdjust()
     {
-        SceneManager.LoadScene("Adjust");
+        SceneManager.LoadScene("ExternalStorageTest");
     }
 
     public void onClickToMake()
